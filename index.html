@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뷰포트 (Viewport) - 모바일 · 태블릿 · PC 화면 비교</title>
+  <link rel="stylesheet" href="showcase.css">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+</head>
+<body class="theme-dark">
+
+  <!-- ==============================================
+       HEADER: 3-TIER PROFESSIONAL WORKSPACE HEADER
+       A. Project Bar (Thin top bar for projects & global tools)
+       B. URL / Navigation Bar (Primary address bar)
+       C. Viewport Toolbar (Comparison modes, sync scroll, zoom)
+       ============================================== -->
+  <header class="studio-header">
+    
+    <!-- ---------------------------------------------
+         A. Project Bar (Height: 32px)
+         --------------------------------------------- -->
+    <div class="header-project-bar">
+      <!-- Left: Project / Site Selector -->
+      <div class="bar-left">
+        <div class="brand-badge">
+          <span class="brand-icon">◈</span>
+          <span class="brand-name">뷰포트</span>
+          <span class="brand-pro-tag">PRO</span>
+        </div>
+        <div class="project-selector-wrapper">
+          <label for="projectSelect" class="selector-label">프로젝트:</label>
+          <select id="projectSelect" class="project-select-dropdown" title="프로젝트 / 사이트 빠른 선택">
+            <option value="https://www.knou.ac.kr/sites/knou/index.do">🎓 한국방송통신대학교 (기본 데모)</option>
+            <option value="file:///C:/Users/%EC%9D%B4%EC%88%98%EC%A0%95/.gemini/antigravity/scratch/myroutine-app/UPLOAD_TO_GITHUB/index.html">⭐ 모어해빗 (내 로컬 앱)</option>
+            <option value="https://www.naver.com">🟢 네이버</option>
+            <option value="https://ko.wikipedia.org">📚 위키백과</option>
+            <option value="https://tailwindcss.com">⚡ Tailwind CSS</option>
+            <option value="http://localhost:3000">💻 localhost:3000 (React)</option>
+            <option value="http://localhost:5173">💻 localhost:5173 (Vite)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Center: Current Working Project Title / Target -->
+      <div class="bar-center">
+        <span class="current-target-pill" id="currentTargetPill">🎓 국립한국방송통신대학교</span>
+      </div>
+
+      <!-- Right: Settings / Theme / Global Tools -->
+      <div class="bar-right">
+        <!-- Theme Toggle -->
+        <button class="mini-tool-btn" id="themeToggleBtn" title="다크 / 라이트 모드 전환">
+          <svg class="icon-sun" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="icon-moon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+
+        <!-- Fullscreen Canvas Toggle -->
+        <button class="mini-tool-btn" id="appFullscreenBtn" title="헤더를 최소화하고 캔버스 전체화면 보기 (Esc로 복귀)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- ---------------------------------------------
+         B. URL / Navigation Bar (Height: 44px)
+         Primary Action Bar
+         --------------------------------------------- -->
+    <div class="header-url-bar">
+      <div class="url-primary-group">
+        <div class="url-input-box">
+          <svg class="url-status-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          <input type="text" id="targetUrlInput" class="target-url-input" 
+                 placeholder="웹사이트 URL 또는 로컬 파일 경로 입력 (예: https://...)" 
+                 value="https://www.knou.ac.kr/sites/knou/index.do" spellcheck="false" autocomplete="off" />
+          <button class="url-clear-btn" id="clearUrlBtn" title="주소창 지우기">✕</button>
+        </div>
+        <button class="url-go-btn" id="navigateBtn" title="페이지 로드 (Enter)">
+          <span>이동</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+
+      <!-- URL-Adjacent Tools -->
+      <div class="url-side-tools">
+        <!-- Smart Proxy Toggle -->
+        <label class="proxy-pill-switch" title="외부 사이트 X-Frame-Options iframe 차단 우회 프록시">
+          <input type="checkbox" id="proxyModeToggle" checked>
+          <span class="pill-dot"></span>
+          <span class="pill-label" id="proxyStatusPill">프록시 ON</span>
+        </label>
+
+        <!-- Open Raw in New Tab -->
+        <a href="https://www.knou.ac.kr/sites/knou/index.do" target="_blank" id="openExternalBtn" class="url-action-btn" title="현재 웹사이트를 새 브라우저 창에서 열기">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <span>새 탭</span>
+        </a>
+      </div>
+    </div>
+
+
+    <!-- ---------------------------------------------
+         C. Viewport Toolbar (Height: 38px)
+         Comparison modes, sync scroll, zoom, focus return
+         --------------------------------------------- -->
+    <div class="header-viewport-toolbar">
+      <!-- Left: Viewport Mode Segmented Tabs -->
+      <nav class="viewport-mode-tabs" aria-label="뷰포트 모드">
+        <button class="mode-tab active" data-mode="comparison">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="6" height="18" rx="1"></rect><rect x="10" y="3" width="7" height="18" rx="1"></rect><rect x="19" y="3" width="3" height="18" rx="1"></rect></svg>
+          <span>3분할 동시 비교</span>
+        </button>
+        <button class="mode-tab" data-mode="simulator">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+          <span>자유 리사이즈</span>
+        </button>
+        <button class="mode-tab" data-mode="guide">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>디자인 스펙 & 가이드</span>
+        </button>
+      </nav>
+
+      <!-- Right: Viewport Controls Group -->
+      <div class="viewport-tools-group">
+        <!-- Return from Focus Mode Banner (Shown ONLY in Focus Mode) -->
+        <button id="exitFocusModeBtn" class="btn-exit-focus" style="display: none;" title="3분할 전체 비교로 돌아가기 (Esc)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <span>3분할 비교 복귀 (Esc)</span>
+        </button>
+
+        <!-- Sync Scroll Toggle Button -->
+        <button class="tool-btn-sync active" id="syncScrollControl" title="모바일, 태블릿, PC 스크롤 동시 연동 (클릭하여 켜기/끄기)">
+          <input type="checkbox" id="syncScrollCheckbox" checked style="display: none;">
+          <span class="sync-icon">⇋</span>
+          <span class="sync-label" id="syncScrollText">스크롤 연동 ON ✓</span>
+        </button>
+
+        <div class="toolbar-sep"></div>
+
+        <!-- Zoom Controls -->
+        <div class="zoom-stepper-cluster" title="미리보기 화면 표시 배율">
+          <button class="zoom-step-btn" id="zoomOutBtn" title="배율 축소">−</button>
+          <div class="zoom-select-box">
+            <select id="scaleSelect" class="zoom-dropdown">
+              <option value="fit">Fit (화면 맞춤)</option>
+              <option value="0.5">50%</option>
+              <option value="0.65" selected>65% (권장)</option>
+              <option value="0.75">75%</option>
+              <option value="0.9">90%</option>
+              <option value="1">100%</option>
+            </select>
+          </div>
+          <button class="zoom-step-btn" id="zoomInBtn" title="배율 확대">+</button>
+        </div>
+
+        <div class="toolbar-sep"></div>
+
+        <!-- Refresh All -->
+        <button class="tool-icon-btn" id="refreshAllBtn" title="모든 뷰포트 화면 새로고침">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading Progress Bar -->
+    <div class="url-loading-bar" id="urlLoadingBar"></div>
+
+    <!-- File Protocol Warning Alert (Shown ONLY when opened via file:///) -->
+    <div class="file-warning-banner" id="fileProtocolWarning" style="display: none;">
+      <div class="file-warning-inner">
+        <span class="warning-icon-badge">⚠️ 필독</span>
+        <div class="warning-text-group">
+          <strong>현재 웹 브라우저가 '로컬 파일(file:///)' 모드로 실행되어 있습니다!</strong>
+          <p>
+            브라우저 자체 보안 정책으로 인해 외부 사이트가 차단됩니다. <strong><code>start_server.bat</code> 실행</strong> 후 <strong><a href="http://localhost:8080" target="_blank" class="server-link">http://localhost:8080</a></strong>으로 접속하시면 모든 사이트가 정상 로드됩니다!
+          </p>
+        </div>
+        <a href="http://localhost:8080" target="_blank" class="btn-launch-server">🌐 localhost:8080 열기</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==============================================
+       MAIN WORKSPACE (Switchable Views)
+       ============================================== -->
+  <main class="studio-viewport-area">
+
+    <!-- ==============================================
+         MODE 1: 3-Device Simultaneous Comparison View
+         ============================================== -->
+    <section class="mode-view active" id="viewComparison">
+      <div class="comparison-stage-wrapper">
+        <div class="comparison-stage" id="comparisonStage">
+
+          <!-- 1. MOBILE DEVICE -->
+          <div class="device-card-container" data-device="mobile">
+            <!-- Sleek Card Header -->
+            <div class="device-card-header">
+              <div class="card-header-left">
+                <span class="status-dot mobile" id="qaDotMobile"></span>
+                <span class="card-device-type">MOBILE</span>
+                <span class="card-res-tag">390 × 844</span>
+              </div>
+              <div class="card-header-actions">
+                <button class="card-action-btn btn-focus-card" data-device="mobile" title="모바일 뷰포트 전체화면 확대 (Focus)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                  <span>확대</span>
+                </button>
+                <button class="card-action-btn btn-reload-card" data-target="frameMobile" title="모바일 화면만 새로고침">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                </button>
+                <button class="card-action-btn btn-toggle-qa" data-device="mobile" title="QA 이슈 체크 및 메모 토글">
+                  <span>📝 QA</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hardware Mockup Frame -->
+            <div class="mobile-frame-wrapper">
+              <div class="mobile-device">
+                <div class="mobile-notch">
+                  <div class="camera-lens"></div>
+                  <div class="speaker-grill"></div>
+                </div>
+                <div class="volume-up-btn"></div>
+                <div class="volume-down-btn"></div>
+                <div class="power-btn"></div>
+
+                <div class="mobile-screen">
+                  <div class="mobile-status-bar">
+                    <span class="status-time">09:41</span>
+                    <div class="status-icons">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"></path></svg>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="6" width="18" height="12" rx="2"></rect><line x1="21" y1="10" x2="21" y2="14"></line></svg>
+                    </div>
+                  </div>
+                  <iframe src="https://www.knou.ac.kr/sites/knou/index.do" id="frameMobile" name="frameMobile" title="모바일 뷰포트 미리보기"></iframe>
+                  <div class="home-indicator"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Collapsible QA & Notes Panel -->
+            <div class="device-qa-panel" id="qaPanelMobile" style="display: none;">
+              <div class="qa-panel-inner">
+                <div class="qa-status-row">
+                  <span class="qa-row-label">QA 상태:</span>
+                  <div class="qa-btn-group">
+                    <button class="qa-status-btn qa-ok" data-device="mobile" data-status="ok">✓ 정상</button>
+                    <button class="qa-status-btn qa-warn" data-device="mobile" data-status="warn">⚠ 확인 필요</button>
+                    <button class="qa-status-btn qa-err" data-device="mobile" data-status="err">✕ 문제</button>
+                  </div>
+                </div>
+                <textarea class="qa-note-textarea" id="qaNoteMobile" placeholder="모바일 화면 디자인 문제나 개선점 메모 (자동 저장)"></textarea>
+                <details class="qa-spec-details">
+                  <summary>모바일 특화 레이아웃 특징 (4가지)</summary>
+                  <ul class="feature-checklist">
+                    <li><span class="icon-check">✓</span> <strong>1단 세로 스택</strong>: 가로 스크롤 없이 엄지손가락으로 쾌적한 탐색</li>
+                    <li><span class="icon-check">✓</span> <strong>고정 하단 탭바 (Bottom Nav)</strong>: 주요 메뉴를 한 손으로 손쉽게 터치</li>
+                    <li><span class="icon-check">✓</span> <strong>테이블 → 카드 전환</strong>: 가로로 긴 표를 모바일 카드 스택으로 자동 재구성</li>
+                    <li><span class="icon-check">✓</span> <strong>햄버거 슬라이드 드로어</strong>: 복잡한 카테고리는 서랍식 메뉴로 감춤</li>
+                  </ul>
+                </details>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. TABLET DEVICE -->
+          <div class="device-card-container" data-device="tablet">
+            <!-- Sleek Card Header -->
+            <div class="device-card-header">
+              <div class="card-header-left">
+                <span class="status-dot tablet" id="qaDotTablet"></span>
+                <span class="card-device-type">TABLET</span>
+                <span class="card-res-tag">768 × 1024</span>
+              </div>
+              <div class="card-header-actions">
+                <button class="card-action-btn btn-focus-card" data-device="tablet" title="태블릿 뷰포트 전체화면 확대 (Focus)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                  <span>확대</span>
+                </button>
+                <button class="card-action-btn btn-reload-card" data-target="frameTablet" title="태블릿 화면만 새로고침">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                </button>
+                <button class="card-action-btn btn-toggle-qa" data-device="tablet" title="QA 이슈 체크 및 메모 토글">
+                  <span>📝 QA</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hardware Mockup Frame -->
+            <div class="tablet-frame-wrapper">
+              <div class="tablet-device">
+                <div class="tablet-camera"></div>
+                <div class="tablet-screen">
+                  <div class="tablet-browser-bar">
+                    <div class="browser-controls">
+                      <span class="dot-btn red"></span>
+                      <span class="dot-btn yellow"></span>
+                      <span class="dot-btn green"></span>
+                    </div>
+                    <div class="tablet-url-box">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                      <span id="tabletUrlDisplay">knou.ac.kr/sites/knou</span>
+                    </div>
+                  </div>
+                  <iframe src="https://www.knou.ac.kr/sites/knou/index.do" id="frameTablet" name="frameTablet" title="태블릿 뷰포트 미리보기"></iframe>
+                </div>
+              </div>
+            </div>
+
+            <!-- Collapsible QA & Notes Panel -->
+            <div class="device-qa-panel" id="qaPanelTablet" style="display: none;">
+              <div class="qa-panel-inner">
+                <div class="qa-status-row">
+                  <span class="qa-row-label">QA 상태:</span>
+                  <div class="qa-btn-group">
+                    <button class="qa-status-btn qa-ok" data-device="tablet" data-status="ok">✓ 정상</button>
+                    <button class="qa-status-btn qa-warn" data-device="tablet" data-status="warn">⚠ 확인 필요</button>
+                    <button class="qa-status-btn qa-err" data-device="tablet" data-status="err">✕ 문제</button>
+                  </div>
+                </div>
+                <textarea class="qa-note-textarea" id="qaNoteTablet" placeholder="태블릿 화면 디자인 문제나 개선점 메모 (자동 저장)"></textarea>
+                <details class="qa-spec-details">
+                  <summary>태블릿 특화 레이아웃 특징 (4가지)</summary>
+                  <ul class="feature-checklist">
+                    <li><span class="icon-check">✓</span> <strong>2~3단 균형 그리드</strong>: 넓어진 화면 비율에 맞춰 카드 및 지표 2열 배치</li>
+                    <li><span class="icon-check">✓</span> <strong>하단 바 제거 & 상단 헤더 통합</strong>: 태블릿 파지법에 맞춰 상단으로 메뉴 이동</li>
+                    <li><span class="icon-check">✓</span> <strong>와이드 히어로 레이아웃</strong>: 좌우 2분할로 텍스트와 비주얼 오브제 조화</li>
+                    <li><span class="icon-check">✓</span> <strong>가로/세로 회전 대응</strong>: 회전 시에도 컨테이너 쿼리가 레이아웃 자동 최적화</li>
+                  </ul>
+                </details>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. PC DESKTOP DEVICE -->
+          <div class="device-card-container" data-device="desktop">
+            <!-- Sleek Card Header -->
+            <div class="device-card-header">
+              <div class="card-header-left">
+                <span class="status-dot desktop" id="qaDotDesktop"></span>
+                <span class="card-device-type">DESKTOP</span>
+                <span class="card-res-tag">1440 × 900</span>
+              </div>
+              <div class="card-header-actions">
+                <button class="card-action-btn btn-focus-card" data-device="desktop" title="데스크톱 뷰포트 전체화면 확대 (Focus)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                  <span>확대</span>
+                </button>
+                <button class="card-action-btn btn-reload-card" data-target="frameDesktop" title="데스크톱 화면만 새로고침">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                </button>
+                <button class="card-action-btn btn-toggle-qa" data-device="desktop" title="QA 이슈 체크 및 메모 토글">
+                  <span>📝 QA</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hardware Mockup Frame -->
+            <div class="desktop-frame-wrapper">
+              <div class="desktop-device">
+                <div class="desktop-browser-header">
+                  <div class="window-controls">
+                    <span class="traffic-light red"></span>
+                    <span class="traffic-light yellow"></span>
+                    <span class="traffic-light green"></span>
+                  </div>
+                  <div class="browser-tabs">
+                    <div class="active-tab">
+                      <span class="tab-favicon">🎓</span>
+                      <span class="tab-title">국립한국방송통신대학교</span>
+                      <span class="tab-close">×</span>
+                    </div>
+                  </div>
+                  <div class="desktop-url-bar">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <span id="desktopUrlDisplay">knou.ac.kr/sites/knou/index.do</span>
+                  </div>
+                </div>
+
+                <div class="desktop-screen">
+                  <iframe src="https://www.knou.ac.kr/sites/knou/index.do" id="frameDesktop" name="frameDesktop" title="PC 데스크톱 뷰포트 미리보기"></iframe>
+                </div>
+                <div class="laptop-hinge"></div>
+              </div>
+            </div>
+
+            <!-- Collapsible QA & Notes Panel -->
+            <div class="device-qa-panel" id="qaPanelDesktop" style="display: none;">
+              <div class="qa-panel-inner">
+                <div class="qa-status-row">
+                  <span class="qa-row-label">QA 상태:</span>
+                  <div class="qa-btn-group">
+                    <button class="qa-status-btn qa-ok" data-device="desktop" data-status="ok">✓ 정상</button>
+                    <button class="qa-status-btn qa-warn" data-device="desktop" data-status="warn">⚠ 확인 필요</button>
+                    <button class="qa-status-btn qa-err" data-device="desktop" data-status="err">✕ 문제</button>
+                  </div>
+                </div>
+                <textarea class="qa-note-textarea" id="qaNoteDesktop" placeholder="데스크톱 화면 디자인 문제나 개선점 메모 (자동 저장)"></textarea>
+                <details class="qa-spec-details">
+                  <summary>PC 데스크톱 특화 레이아웃 특징 (4가지)</summary>
+                  <ul class="feature-checklist">
+                    <li><span class="icon-check">✓</span> <strong>4단 풀 와이드 그리드</strong>: 고해상도 모니터의 정보 전달력 극대화</li>
+                    <li><span class="icon-check">✓</span> <strong>풀 네비게이션(GNB) & 메가메뉴</strong>: 햄버거 없이 모든 카테고리 즉시 노출</li>
+                    <li><span class="icon-check">✓</span> <strong>마우스 호버 & 단축키</strong>: 마우스 커서 올릴 때 장바구니 버튼 노출, ⌘K 검색</li>
+                    <li><span class="icon-check">✓</span> <strong>다단 데이터 테이블</strong>: 주문내역, 배송상태, 관리 버튼이 정렬된 완벽한 테이블 표</li>
+                  </ul>
+                </details>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==============================================
+           GOOGLE ADSENSE BANNER SLOT #3 (Comparison Bottom)
+           - 규격: 728×90 / 970×90 / 와이드 반응형 디스플레이 광고
+           ============================================== -->
+      <aside class="ad-banner-slot-wrapper ad-bottom-banner" aria-label="스폰서 광고 영역">
+        <div class="ad-header-meta">
+          <span class="ad-policy-label">ADVERTISEMENT</span>
+        </div>
+        <div class="ad-slot-frame" id="adSlotBottom">
+          <!-- 
+            ▼ [구글 애드센스 하단 와이드 광고 코드 교체 위치] ▼
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-slot="XXXXXXXXXX"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          -->
+          <div class="ad-placeholder-card">
+            <div class="ad-placeholder-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <div class="ad-placeholder-info">
+              <div class="ad-brand-title">Google AdSense · 하단 와이드 디스플레이 광고 (728 × 90 / 970 × 90)</div>
+              <div class="ad-brand-desc">3분할 뷰포트 검사를 마친 후 스크롤 하단에 자연스럽게 노출되는 와이드 배너 영역입니다.</div>
+            </div>
+            <div class="ad-action-pill">하단 광고 슬롯</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+
+    <!-- ==============================================
+         MODE 2: Single Interactive Simulator & Resizer
+         ============================================== -->
+    <section class="mode-view" id="viewSimulator">
+      <div class="simulator-toolbar">
+        <div class="preset-group">
+          <span class="toolbar-label">기기 프리셋:</span>
+          <button class="preset-btn" data-w="375" data-h="667" data-name="iPhone SE">📱 iPhone SE (375)</button>
+          <button class="preset-btn active" data-w="393" data-h="852" data-name="iPhone 15 Pro">📱 iPhone 15 (393)</button>
+          <button class="preset-btn" data-w="412" data-h="915" data-name="Galaxy S24">📱 Galaxy S24 (412)</button>
+          <button class="preset-btn" data-w="768" data-h="1024" data-name="iPad Mini">💻 iPad Mini (768)</button>
+          <button class="preset-btn" data-w="820" data-h="1180" data-name="iPad Air">💻 iPad Air (820)</button>
+          <button class="preset-btn" data-w="1024" data-h="768" data-name="Small PC">🖥️ 일반 PC (1024)</button>
+          <button class="preset-btn" data-w="1280" data-h="800" data-name="MacBook 13">🖥️ 맥북 13" (1280)</button>
+          <button class="preset-btn" data-w="1440" data-h="900" data-name="Wide Desktop">🖥️ 와이드 (1440)</button>
+        </div>
+
+        <div class="simulator-actions">
+          <button class="tool-btn" id="rotateBtn" title="화면 가로/세로 전환">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>회전</span>
+          </button>
+          
+          <div class="size-input-box">
+            <input type="number" id="inputCustomWidth" value="393" min="320" max="1920">
+            <span>×</span>
+            <input type="number" id="inputCustomHeight" value="852" min="400" max="1600">
+            <span>px</span>
+            <button class="apply-size-btn" id="applyCustomSize">적용</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Breakpoint Range Ruler Guide -->
+      <div class="breakpoint-ruler-wrapper">
+        <div class="breakpoint-ruler">
+          <div class="ruler-segment mobile-zone" style="flex: 767;">
+            <span class="zone-label">📱 모바일 구역 (&lt; 768px)</span>
+          </div>
+          <div class="ruler-segment tablet-zone" style="flex: 256;">
+            <span class="zone-label">💻 태블릿 구역 (768px ~ 1023px)</span>
+          </div>
+          <div class="ruler-segment desktop-zone" style="flex: 577;">
+            <span class="zone-label">🖥️ PC 데스크톱 구역 (1024px ~)</span>
+          </div>
+        </div>
+        <div class="current-width-cursor" id="widthCursor" style="left: 24%;">
+          <span class="cursor-tooltip" id="cursorTooltip">393px</span>
+        </div>
+      </div>
+
+      <!-- Resizable Simulator Canvas -->
+      <div class="simulator-canvas">
+        <div class="resizable-device-wrapper compact-view" id="resizableWrapper" style="width: 393px; height: 820px;">
+          <!-- Floating Dimension Header -->
+          <div class="simulator-frame-header">
+            <div class="frame-tag-info">
+              <span class="status-indicator-dot mobile" id="simStatusDot"></span>
+              <strong id="simDeviceLabel">iPhone 15 Pro</strong>
+              <span class="sim-cur-size" id="simCurSize">393 × 820 px</span>
+              <span class="sim-url-badge" id="simUrlDisplay">knou.ac.kr/sites/knou</span>
+            </div>
+            <div class="frame-tag-breakpoint mobile" id="simBreakpointTag">&lt; 768px (모바일)</div>
+          </div>
+
+          <!-- Frame Screen Body -->
+          <div class="simulator-screen-container">
+            <iframe src="https://www.knou.ac.kr/sites/knou/index.do" id="frameSimulator" name="frameSimulator" title="시뮬레이터 미리보기"></iframe>
+          </div>
+
+          <!-- Interactive Resize Handles -->
+          <div class="resize-handle handle-right" id="handleRight" title="마우스로 드래그하여 가로폭을 늘리거나 줄이세요">
+            <div class="handle-bar"></div>
+          </div>
+          <div class="resize-handle handle-bottom" id="handleBottom">
+            <div class="handle-bar-h"></div>
+          </div>
+          <div class="resize-handle handle-corner" id="handleCorner">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="20" cy="4" r="2"></circle><circle cx="20" cy="12" r="2"></circle><circle cx="12" cy="12" r="2"></circle><circle cx="20" cy="20" r="2"></circle><circle cx="12" cy="20" r="2"></circle><circle cx="4" cy="20" r="2"></circle></svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==============================================
+         MODE 3: Responsive Design Guide & Checklist
+         ============================================== -->
+    <section class="mode-view" id="viewGuide">
+      <div class="container guide-content-container">
+
+        <!-- Guide Hero Banner -->
+        <div class="guide-banner">
+          <span class="guide-sub-tag">RESPONSIVE DESIGN MASTER GUIDE</span>
+          <h2 class="guide-hero-title">모바일, 태블릿, PC 반응형 웹의 핵심 아키텍처</h2>
+          <p class="guide-hero-desc">
+            동일한 HTML 마크업이 각 화면 크기에 맞춰 어떻게 최적화된 인터페이스로 재구성되는지, 실무 표준 미디어 쿼리와 설계 패턴을 상세히 정리했습니다.
+          </p>
+        </div>
+
+        <!-- Section 1: Comparison Matrix -->
+        <div class="guide-block">
+          <h3 class="guide-block-title">
+            <span class="num-badge">1</span>
+            화면 크기별 UX/UI 비교 매트릭스
+          </h3>
+
+          <div class="matrix-table-card">
+            <table class="guide-matrix-table">
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th class="col-mobile">📱 스마트폰 (Mobile)</th>
+                  <th class="col-tablet">💻 태블릿 (Tablet)</th>
+                  <th class="col-pc">🖥️ PC 데스크톱 (PC)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>기준 해상도</strong></td>
+                  <td><code>0 ~ 767px</code> (주요 375~430px)</td>
+                  <td><code>768px ~ 1023px</code> (주요 768~834px)</td>
+                  <td><code>1024px 이상</code> (주요 1280~1920px)</td>
+                </tr>
+                <tr>
+                  <td><strong>내비게이션 구조</strong></td>
+                  <td>햄버거 슬라이드 메뉴 + <strong>하단 고정 탭바</strong></td>
+                  <td>상단 헤더 축약형 메뉴 또는 탭 메뉴</td>
+                  <td><strong>풀 GNB</strong> + 다단 드롭다운 메가메뉴</td>
+                </tr>
+                <tr>
+                  <td><strong>그리드 컬럼 (Columns)</strong></td>
+                  <td>1컬럼 수직 스택 또는 2컬럼 컴팩트</td>
+                  <td>2 ~ 3컬럼 균형 레이아웃</td>
+                  <td>3 ~ 4컬럼 이상 와이드 대시보드</td>
+                </tr>
+                <tr>
+                  <td><strong>입력 방식 & 조작</strong></td>
+                  <td><strong>터치 (엄지존, 최소 48×48px)</strong></td>
+                  <td>터치 + 스타일러스펜 + 트랙패드</td>
+                  <td><strong>마우스 커서 + 키보드 단축키(⌘K)</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>데이터 표 (Table)</strong></td>
+                  <td><strong>카드형 스택 (Card Stack)</strong>으로 재구성</td>
+                  <td>보조 열 축약된 간이 표</td>
+                  <td>모든 정보가 한눈에 보이는 <strong>다단 테이블</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>호버(Hover) 인터랙션</strong></td>
+                  <td>터치 시에만 동작 (호버 의존 절대 금지)</td>
+                  <td>제한적 호버 대응</td>
+                  <td>마우스 오버 시 액션 버튼 및 툴팁 즉시 노출</td>
+                </tr>
+                <tr>
+                  <td><strong>타이포그래피</strong></td>
+                  <td>본문 15~16px / 헤드라인 24~28px</td>
+                  <td>본문 16px / 헤드라인 32~40px</td>
+                  <td>본문 16~18px / 헤드라인 42~56px</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ==============================================
+             GOOGLE ADSENSE BANNER SLOT #2 (Guide In-Feed)
+             - 규격: 728×90 / 반응형 네이티브 인피드 광고
+             ============================================== -->
+        <aside class="ad-banner-slot-wrapper ad-infeed-guide" aria-label="스폰서 광고 영역">
+          <div class="ad-header-meta">
+            <span class="ad-policy-label">ADVERTISEMENT</span>
+            <span class="ad-guide-hint">※ 가이드 본문 흐름에 맞춘 네이티브 인피드 디스플레이 광고 영역</span>
+          </div>
+          <div class="ad-slot-frame" id="adSlotGuide">
+            <!-- 
+              ▼ [구글 애드센스 인피드 광고 코드 교체 위치] ▼
+              <ins class="adsbygoogle"
+                   style="display:block"
+                   data-ad-format="fluid"
+                   data-ad-layout-key="-fb+5w+4e-db+86"
+                   data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                   data-ad-slot="XXXXXXXXXX"></ins>
+              <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            -->
+            <div class="ad-placeholder-card">
+              <div class="ad-placeholder-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                </svg>
+              </div>
+              <div class="ad-placeholder-info">
+                <div class="ad-brand-title">Google AdSense · 기술 가이드 인피드 배너 (Native In-Feed Unit)</div>
+                <div class="ad-brand-desc">문서 열람 및 학습 흐름에 자연스럽게 녹아드는 고효율 인피드 광고 슬롯입니다.</div>
+              </div>
+              <div class="ad-action-pill">인피드 광고 슬롯</div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Section 2: Core CSS Implementation Patterns -->
+        <div class="guide-block">
+          <h3 class="guide-block-title">
+            <span class="num-badge">2</span>
+            실무 반응형 5대 핵심 CSS 기법 & 코드 스니펫
+          </h3>
+
+          <div class="guide-cards-grid">
+            <!-- Card 1: Media Queries -->
+            <div class="code-guide-card">
+              <div class="code-card-header">
+                <span class="code-tag">CSS Media Queries</span>
+                <h4>1. 모바일 퍼스트(Mobile-First) 미디어 쿼리</h4>
+              </div>
+              <p class="code-card-desc">
+                작은 화면 스타일을 기본으로 작성하고, 화면이 넓어질 때마다 <code>min-width</code>를 통해 레이아웃을 점진적으로 확장하는 가장 효율적인 방식입니다.
+              </p>
+              <pre class="code-snippet"><code>/* 1. 기본 스타일: 모바일 (< 768px) */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* 2. 태블릿 구간 (768px 이상) */
+@media (min-width: 768px) {
+  .product-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+}
+
+/* 3. PC 데스크톱 구간 (1024px 이상) */
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}</code></pre>
+            </div>
+
+            <!-- Card 2: Responsive Table Pattern -->
+            <div class="code-guide-card">
+              <div class="code-card-header">
+                <span class="code-tag">Responsive UX Pattern</span>
+                <h4>2. 테이블(Table)을 모바일 카드 스택으로 변환</h4>
+              </div>
+              <p class="code-card-desc">
+                모바일에서 가로 스크롤로 잘려 보기 힘든 <code>table</code>을 <code>td::before { content: attr(data-label) }</code> 속성을 사용하여 세련된 카드로 전환합니다.
+              </p>
+              <pre class="code-snippet"><code>/* 모바일: 표를 블록 카드형으로 재구성 */
+@media (max-width: 767px) {
+  .responsive-table thead { display: none; }
+  .responsive-table tr { 
+    display: block; 
+    border-radius: 12px;
+    margin-bottom: 12px;
+    padding: 14px;
+  }
+  .responsive-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+  .responsive-table td::before {
+    content: attr(data-label); /* HTML의 data-label 표시 */
+    color: #888;
+    font-weight: 600;
+  }
+}</code></pre>
+            </div>
+
+            <!-- Card 3: Modern Container Queries -->
+            <div class="code-guide-card">
+              <div class="code-card-header">
+                <span class="code-tag">Modern Web Standards</span>
+                <h4>3. 모던 CSS 컨테이너 쿼리 (Container Queries)</h4>
+              </div>
+              <p class="code-card-desc">
+                전체 화면 너비가 아닌, <strong>컴포넌트가 배치된 부모 영역의 너비</strong>를 측정하여 스타일을 바꿉니다. 사이드바나 다단 어디에 들어가도 깨지지 않습니다.
+              </p>
+              <pre class="code-snippet"><code>/* 부모 요소를 컨테이너로 선언 */
+.editorial-section {
+  container-type: inline-size;
+  container-name: article-card;
+}
+
+/* 컨테이너의 가용 폭이 700px 이상일 때 */
+@container article-card (min-width: 700px) {
+  .editorial-banner {
+    flex-direction: row;
+  }
+  .editorial-title {
+    font-size: 1.85rem;
+  }
+}</code></pre>
+            </div>
+
+            <!-- Card 4: Fluid Typography -->
+            <div class="code-guide-card">
+              <div class="code-card-header">
+                <span class="code-tag">Fluid Sizing</span>
+                <h4>4. 미디어 쿼리 없는 유동형 폰트 clamp()</h4>
+              </div>
+              <p class="code-card-desc">
+                수많은 미디어 쿼리 분기 없이도 화면 크기에 비례하여 폰트 크기가 부드럽게 늘어나고 최소/최대 한계치를 보장하는 기법입니다.
+              </p>
+              <pre class="code-snippet"><code>/* clamp(최소 크기, 선호 비율, 최대 크기) */
+.hero-title {
+  /* 최소 1.85rem, 뷰포트 폭에 따라 부드럽게 증가, 최대 3.25rem */
+  font-size: clamp(1.85rem, 5vw + 0.5rem, 3.25rem);
+  line-height: 1.25;
+}
+
+.hero-desc {
+  font-size: clamp(0.95rem, 1.2vw + 0.4rem, 1.15rem);
+}</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Professional Responsive Checklist -->
+        <div class="guide-block">
+          <h3 class="guide-block-title">
+            <span class="num-badge">3</span>
+            실무 반응형 웹 퍼블리싱 검증 체크리스트
+          </h3>
+
+          <div class="checklist-card">
+            <div class="checklist-item">
+              <input type="checkbox" id="chk1" checked>
+              <label for="chk1">
+                <strong>1. 뷰포트 메타태그 기본 선언</strong>
+                <span><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</code> 필수 포함 확인</span>
+              </label>
+            </div>
+
+            <div class="checklist-item">
+              <input type="checkbox" id="chk2" checked>
+              <label for="chk2">
+                <strong>2. 모바일 가로 스크롤(오버플로우) 버그 방지</strong>
+                <span>모든 이미지와 미디어에 <code>max-width: 100%; height: auto;</code> 및 부모 컨테이너 고정 px 너비 지양</span>
+              </label>
+            </div>
+
+            <div class="checklist-item">
+              <input type="checkbox" id="chk3" checked>
+              <label for="chk3">
+                <strong>3. 터치 친화적 타깃 크기 (Thumb Zone Ergonomics)</strong>
+                <span>모바일 버튼 및 링크의 인터랙션 영역을 최소 44×44px (권장 48×48px) 이상 확보</span>
+              </label>
+            </div>
+
+            <div class="checklist-item">
+              <input type="checkbox" id="chk4" checked>
+              <label for="chk4">
+                <strong>4. 호버(Hover) 전용 인터랙션의 폴백(Fallback) 제공</strong>
+                <span>모바일 터치 환경에서는 hover가 발생하지 않으므로, 핵심 기능이 호버에 숨겨져 있지 않도록 설계</span>
+              </label>
+            </div>
+
+            <div class="checklist-item">
+              <input type="checkbox" id="chk5" checked>
+              <label for="chk5">
+                <strong>5. 이미지 반응형 최적화 (Responsive Images)</strong>
+                <span><code>picture</code> 태그와 <code>srcset</code>을 활용하여 모바일에는 가벼운 이미지를 서빙하여 데이터 절약</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="showcase.js"></script>
+</body>
+</html>
