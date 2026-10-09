@@ -160,22 +160,68 @@ document.addEventListener('DOMContentLoaded', () => {
   const desktopUrlDisplay = document.getElementById('desktopUrlDisplay');
   const simUrlDisplay = document.getElementById('simUrlDisplay');
 
-  // Check environment protocol
-  const isHttpHost = window.location.protocol.startsWith('http');
+  // Check environment host
+  const isFileProtocol = window.location.protocol === 'file:';
+  const isLocalPyServer = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && !isFileProtocol;
+  const isStaticWeb = !isFileProtocol && !isLocalPyServer; // e.g. GitHub Pages
   const fileProtocolWarning = document.getElementById('fileProtocolWarning');
   const proxyStatusPill = document.getElementById('proxyStatusPill');
+  const xframeSecurityBanner = document.getElementById('xframeSecurityBanner');
+  const xframeTargetDomain = document.getElementById('xframeTargetDomain');
+  const closeSecurityBannerBtn = document.getElementById('closeSecurityBannerBtn');
 
-  if (!isHttpHost) {
+  closeSecurityBannerBtn?.addEventListener('click', () => {
+    if (xframeSecurityBanner) xframeSecurityBanner.style.display = 'none';
+  });
+
+  const knownBlockedDomains = ['naver.com', 'daum.net', 'google.com', 'youtube.com', 'instagram.com', 'facebook.com', 'twitter.com', 'x.com', 'github.com', 'tistory.com'];
+
+  function checkFrameBlockingSites(url) {
+    if (!xframeSecurityBanner) return;
+    if (isLocalPyServer && proxyModeToggle?.checked) {
+      xframeSecurityBanner.style.display = 'none';
+      return;
+    }
+    const isBlocked = knownBlockedDomains.some(d => url.toLowerCase().includes(d));
+    if (isBlocked) {
+      if (xframeTargetDomain) {
+        try {
+          const parsed = new URL(url);
+          xframeTargetDomain.textContent = parsed.hostname;
+        } catch (e) {
+          xframeTargetDomain.textContent = '입력하신 사이트';
+        }
+      }
+      xframeSecurityBanner.style.display = 'block';
+    } else {
+      xframeSecurityBanner.style.display = 'none';
+    }
+  }
+
+  if (isFileProtocol) {
     if (fileProtocolWarning) fileProtocolWarning.style.display = 'block';
     if (proxyStatusPill) {
-      proxyStatusPill.className = 'proxy-status-pill offline';
-      proxyStatusPill.textContent = '⚠️ 로컬서버(start_server.bat) 권장';
+      proxyStatusPill.textContent = '⚠️ file:/// 모드';
+      proxyStatusPill.closest('.proxy-pill-switch')?.classList.add('offline');
     }
-  } else {
+  } else if (isLocalPyServer) {
     if (fileProtocolWarning) fileProtocolWarning.style.display = 'none';
     if (proxyStatusPill) {
-      proxyStatusPill.className = 'proxy-status-pill';
-      proxyStatusPill.textContent = '⚡ 스마트 프록시 가동중';
+      proxyStatusPill.textContent = '⚡ 로컬 프록시 ON';
+    }
+  } else {
+    // Static web hosting like GitHub Pages
+    if (fileProtocolWarning) fileProtocolWarning.style.display = 'none';
+    if (proxyModeToggle) {
+      proxyModeToggle.checked = false; // Do not call non-existent /proxy
+    }
+    if (proxyStatusPill) {
+      proxyStatusPill.textContent = '🌐 웹 배포 모드';
+      const switchEl = proxyStatusPill.closest('.proxy-pill-switch');
+      if (switchEl) {
+        switchEl.classList.add('static-mode');
+        switchEl.setAttribute('title', '깃허브 정적 웹 호스팅 환경에서는 직접 로드(Direct Load) 방식으로 동작합니다.');
+      }
     }
   }
 
@@ -210,10 +256,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Check if it's a local file path (file:/// or C:\ or C:/)
     if (url.startsWith('file://') || /^[a-zA-Z]:[\\\/]/.test(url)) {
-      let cleanPath = url.replace(/^file:\/\/\/?/, '');
-      cleanPath = cleanPath.replace(/\\/g, '/');
+      let cleanPath = url.replace(/^file:\/\/\/?/, '').replace(/\\/g, '/');
 
-      if (isHttpHost) {
+      if (isLocalPyServer) {
         // Route through local filesystem bridge
         iframeSrc = `/localfs/${cleanPath}`;
       } else {
@@ -228,7 +273,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 3. Web URL
+    // 2. Web URL formatting
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       if (url.startsWith('localhost') || url.startsWith('127.0.0.1')) {
         url = 'http://' + url;
@@ -237,11 +282,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    const isProxyWanted = proxyModeToggle ? proxyModeToggle.checked : true;
+    const isProxyWanted = proxyModeToggle ? proxyModeToggle.checked : false;
     const isExternal = !url.includes('localhost') && !url.includes('127.0.0.1');
 
-    if (isExternal && isHttpHost && isProxyWanted) {
-      // Use device-aware proxy on http server
+    // ONLY use /proxy on local Python server!
+    if (isExternal && isLocalPyServer && isProxyWanted) {
+      // Use device-aware proxy on local http server
       if (frameMobile) frameMobile.src = `/proxy?url=${encodeURIComponent(url)}&device=mobile`;
       if (frameTablet) frameTablet.src = `/proxy?url=${encodeURIComponent(url)}&device=tablet`;
       if (frameDesktop) frameDesktop.src = `/proxy?url=${encodeURIComponent(url)}&device=desktop`;
@@ -250,15 +296,18 @@ document.addEventListener('DOMContentLoaded', () => {
         frameSimulator.src = `/proxy?url=${encodeURIComponent(url)}&device=${simDevice}`;
       }
     } else {
-      // Direct load
+      // Direct load (Default on GitHub Pages and static web)
       allIframes.forEach(frame => {
         if (frame) frame.src = url;
       });
 
-      if (!isHttpHost && isExternal) {
+      if (isFileProtocol && isExternal) {
         if (fileProtocolWarning) fileProtocolWarning.style.display = 'block';
       }
     }
+
+    // Check for known X-Frame-Options blocking sites on static web
+    checkFrameBlockingSites(url);
 
     finishNavigation(url);
   }
@@ -391,6 +440,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Proxy Toggle change
   proxyModeToggle?.addEventListener('change', () => {
+    if (!isLocalPyServer && proxyModeToggle.checked) {
+      alert('스마트 프록시는 Python 로컬 서버(start_server.bat) 실행 시 지원됩니다.\n깃허브 페이지 등 정적 웹 호스팅 환경에서는 직접 로드(Direct Load) 모드로 동작합니다.');
+      proxyModeToggle.checked = false;
+      return;
+    }
     navigateTo(currentLoadedUrl);
   });
 

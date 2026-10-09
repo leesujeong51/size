@@ -389,6 +389,17 @@ body.theme-light .url-clear-btn {
   box-shadow: none;
 }
 
+.proxy-pill-switch.static-mode {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.28);
+  color: #a5b4fc;
+}
+
+.proxy-pill-switch.static-mode .pill-dot {
+  background: #818cf8;
+  box-shadow: 0 0 5px #818cf8;
+}
+
 .url-action-btn {
   display: inline-flex;
   align-items: center;
@@ -2142,6 +2153,67 @@ ins.adsbygoogle {
 .btn-launch-server:hover {
   background: #fef3c7;
   transform: translateY(-1px);
+}
+
+/* X-Frame-Options Security Notice Banner */
+.xframe-security-banner {
+  background: rgba(99, 102, 241, 0.08);
+  border-top: 1px solid rgba(99, 102, 241, 0.2);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+  color: var(--hub-text-primary);
+  padding: 8px 20px;
+  font-size: 0.78rem;
+  animation: fadeInBanner 0.25s ease;
+}
+
+@keyframes fadeInBanner {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.xframe-banner-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.xframe-icon-badge {
+  background: rgba(99, 102, 241, 0.18);
+  color: #a5b4fc;
+  font-weight: 800;
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+
+.xframe-text {
+  flex: 1;
+  color: var(--hub-text-secondary);
+  line-height: 1.45;
+}
+
+.xframe-text strong {
+  color: var(--hub-text-primary);
+}
+
+.xframe-close-btn {
+  background: none;
+  border: none;
+  color: var(--hub-text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.xframe-close-btn:hover {
+  color: var(--hub-text-primary);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 /* ==========================================================================
