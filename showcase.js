@@ -182,8 +182,21 @@ document.addEventListener('DOMContentLoaded', () => {
       xframeSecurityBanner.style.display = 'none';
       return;
     }
+    const xframeText = document.querySelector('.xframe-text');
+
+    // 1. Check for localhost on static web (Mixed Content)
+    if (isStaticWeb && (url.includes('localhost') || url.includes('127.0.0.1'))) {
+      if (xframeTargetDomain) xframeTargetDomain.textContent = 'localhost (로컬 개발 서버)';
+      if (xframeText) {
+        xframeText.innerHTML = '<strong>localhost</strong>는 브라우저 보안(Mixed Content)으로 인해 온라인 웹(GitHub Pages)에서 직접 연결할 수 없습니다. 컴퓨터에서 <strong>start_server.bat</strong>을 실행하여 로컬 서버(<code>http://localhost:8080</code>)로 접속하시면 정상 작동합니다.';
+      }
+      xframeSecurityBanner.style.display = 'block';
+      return;
+    }
+
+    // 2. Check for known iframe-blocking domains on static web
     const isBlocked = knownBlockedDomains.some(d => url.toLowerCase().includes(d));
-    if (isBlocked) {
+    if (isBlocked && isStaticWeb) {
       if (xframeTargetDomain) {
         try {
           const parsed = new URL(url);
@@ -192,10 +205,14 @@ document.addEventListener('DOMContentLoaded', () => {
           xframeTargetDomain.textContent = '입력하신 사이트';
         }
       }
+      if (xframeText) {
+        xframeText.innerHTML = `<strong>${xframeTargetDomain?.textContent || '해당 사이트'}</strong>는 자체 보안 정책(X-Frame-Options)으로 인해 외부 임베드가 차단되어 있습니다. 우측 <strong>[새 탭]</strong> 버튼으로 확인하시거나, 방송대/위키백과/모어해빗 등 임베드 지원 사이트를 이용해주세요.`;
+      }
       xframeSecurityBanner.style.display = 'block';
-    } else {
-      xframeSecurityBanner.style.display = 'none';
+      return;
     }
+
+    xframeSecurityBanner.style.display = 'none';
   }
 
   if (isFileProtocol) {
@@ -229,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function formatDisplayUrl(url) {
     if (url.includes('knou.ac.kr')) return 'knou.ac.kr/sites/knou';
-    if (url.includes('myroutine-app')) return 'myroutine-app/index.html';
+    if (url.includes('morehabit') || url.includes('myroutine-app')) return 'morehabit/index.html';
     if (url.startsWith('file://') || /^[a-zA-Z]:[\\\/]/.test(url)) {
       const parts = url.split(/[\\\/]/);
       return parts.slice(-2).join('/');
@@ -252,9 +269,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let url = (rawUrl || '').trim();
     if (!url) url = 'https://www.knou.ac.kr/sites/knou/index.do';
 
+    // Auto-map myroutine local path to repository morehabit/index.html
+    if (url.includes('myroutine-app') && (isStaticWeb || !url.startsWith('file://'))) {
+      url = 'morehabit/index.html';
+    }
+
+    // 1. Check relative path in repository (e.g. morehabit/index.html)
+    if (url.endsWith('.html') && !url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('file://')) {
+      allIframes.forEach(frame => {
+        if (frame) frame.src = url;
+      });
+      if (xframeSecurityBanner) xframeSecurityBanner.style.display = 'none';
+      finishNavigation(url);
+      return;
+    }
+
     let iframeSrc = url;
 
-    // 1. Check if it's a local file path (file:/// or C:\ or C:/)
+    // 2. Check if it's a local file path (file:/// or C:\ or C:/)
     if (url.startsWith('file://') || /^[a-zA-Z]:[\\\/]/.test(url)) {
       let cleanPath = url.replace(/^file:\/\/\/?/, '').replace(/\\/g, '/');
 
@@ -273,7 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 2. Web URL formatting
+    // 3. Web URL formatting
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       if (url.startsWith('localhost') || url.startsWith('127.0.0.1')) {
         url = 'http://' + url;
@@ -333,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (url.includes('knou.ac.kr')) {
           tabTitle.textContent = '국립한국방송통신대학교';
           if (tabFavicon) tabFavicon.textContent = '🎓';
-        } else if (url.includes('myroutine-app')) {
+        } else if (url.includes('morehabit') || url.includes('myroutine-app')) {
           tabTitle.textContent = '모어해빗 - 루틴 매니저';
           if (tabFavicon) tabFavicon.textContent = '⭐';
         } else {
@@ -348,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update active state of preset chips
     urlChips.forEach(chip => {
-      if (chip.dataset.url === url || (url.includes('myroutine-app') && chip.classList.contains('chip-myroutine'))) {
+      if (chip.dataset.url === url || ((url.includes('morehabit') || url.includes('myroutine-app')) && chip.classList.contains('chip-myroutine'))) {
         chip.classList.add('active');
       } else {
         chip.classList.remove('active');
@@ -368,8 +400,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentTargetPill) {
       if (url.includes('knou.ac.kr')) {
         currentTargetPill.textContent = '🎓 국립한국방송통신대학교';
-      } else if (url.includes('myroutine-app')) {
-        currentTargetPill.textContent = '⭐ 모어해빗 (내 로컬 앱)';
+      } else if (url.includes('morehabit') || url.includes('myroutine-app')) {
+        currentTargetPill.textContent = '⭐ 모어해빗 (내 루틴 앱)';
       } else if (url.includes('naver.com')) {
         currentTargetPill.textContent = '🟢 네이버';
       } else if (url.includes('wikipedia.org')) {
